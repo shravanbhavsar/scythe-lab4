@@ -1,0 +1,164 @@
+[
+  {
+    "action_name": "a1(self)",
+    "update_var": null,
+    "ufn": "__a1(self)_g0__",
+    "gt": "pc[self] = 1"
+  },
+  {
+    "action_name": "a1(self)",
+    "update_var": "pc",
+    "ufn": "__a1(self)_pc__",
+    "gt": "[pc EXCEPT ![self] = 2]"
+  },
+  {
+    "action_name": "a1(self)",
+    "update_var": "flag",
+    "ufn": "__a1(self)_flag__",
+    "gt": "flag"
+  },
+  {
+    "action_name": "a1(self)",
+    "update_var": "turn",
+    "ufn": "__a1(self)_turn__",
+    "gt": "turn"
+  },
+  {
+    "action_name": "a2(self)",
+    "update_var": null,
+    "ufn": "__a2(self)_g0__",
+    "gt": "pc[self] = 2"
+  },
+  {
+    "action_name": "a2(self)",
+    "update_var": "flag",
+    "ufn": "__a2(self)_flag__",
+    "gt": "[flag EXCEPT ![self] = TRUE]"
+  },
+  {
+    "action_name": "a2(self)",
+    "update_var": "pc",
+    "ufn": "__a2(self)_pc__",
+    "gt": "[pc EXCEPT ![self] = 3]"
+  },
+  {
+    "action_name": "a2(self)",
+    "update_var": "turn",
+    "ufn": "__a2(self)_turn__",
+    "gt": "turn"
+  },
+  {
+    "action_name": "a3(self, other)",
+    "update_var": null,
+    "ufn": "__a3(self, other)_g0__",
+    "gt": "pc[self] = 3"
+  },
+  {
+    "action_name": "a3(self, other)",
+    "update_var": null,
+    "ufn": "__a3(self, other)_g1__",
+    "gt": "self # other"
+  },
+  {
+    "action_name": "a3(self, other)",
+    "update_var": "turn",
+    "ufn": "__a3(self, other)_turn__",
+    "gt": "other"
+  },
+  {
+    "action_name": "a3(self, other)",
+    "update_var": "pc",
+    "ufn": "__a3(self, other)_pc__",
+    "gt": "[pc EXCEPT ![self] = 4]"
+  },
+  {
+    "action_name": "a3(self, other)",
+    "update_var": "flag",
+    "ufn": "__a3(self, other)_flag__",
+    "gt": "flag"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": null,
+    "ufn": "__a4(self, other)_g0__",
+    "gt": "self # other"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": null,
+    "ufn": "__a4(self, other)_g1__",
+    "gt": "pc[self] = 4"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": null,
+    "ufn": "__a4(self, other)_g2__",
+    "gt": "(flag[other] = FALSE) \\/ (turn = self)"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": "pc",
+    "ufn": "__a4(self, other)_pc__",
+    "gt": "[pc EXCEPT ![self] = 0]"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": "flag",
+    "ufn": "__a4(self, other)_flag__",
+    "gt": "flag"
+  },
+  {
+    "action_name": "a4(self, other)",
+    "update_var": "turn",
+    "ufn": "__a4(self, other)_turn__",
+    "gt": "turn"
+  },
+  {
+    "action_name": "cs(self)",
+    "update_var": null,
+    "ufn": "__cs(self)_g0__",
+    "gt": "pc[self] = 0"
+  },
+  {
+    "action_name": "cs(self)",
+    "update_var": "pc",
+    "ufn": "__cs(self)_pc__",
+    "gt": "[pc EXCEPT ![self] = 5]"
+  },
+  {
+    "action_name": "cs(self)",
+    "update_var": "flag",
+    "ufn": "__cs(self)_flag__",
+    "gt": "flag"
+  },
+  {
+    "action_name": "cs(self)",
+    "update_var": "turn",
+    "ufn": "__cs(self)_turn__",
+    "gt": "turn"
+  },
+  {
+    "action_name": "a5(self)",
+    "update_var": null,
+    "ufn": "__a5(self)_g0__",
+    "gt": "pc[self] = 5"
+  },
+  {
+    "action_name": "a5(self)",
+    "update_var": "flag",
+    "ufn": "__a5(self)_flag__",
+    "gt": "[flag EXCEPT ![self] = FALSE]"
+  },
+  {
+    "action_name": "a5(self)",
+    "update_var": "pc",
+    "ufn": "__a5(self)_pc__",
+    "gt": "[pc EXCEPT ![self] = 1]"
+  },
+  {
+    "action_name": "a5(self)",
+    "update_var": "turn",
+    "ufn": "__a5(self)_turn__",
+    "gt": "turn"
+  }
+]

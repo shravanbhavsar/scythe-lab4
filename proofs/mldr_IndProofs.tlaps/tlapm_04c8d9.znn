@@ -1,0 +1,50 @@
+;; obligation #121
+$hyp "v'144" (= Term arith.N)
+$hyp "v'145" (= Version
+arith.N)
+$hyp "v'148" (TLA.bAll (TLA.SUBSET Server) ((a_c1a) (TLA.bAll (TLA.SUBSET Server) ((a_c2a) (=> (= (TLA.fapply TLA.Succ 0)
+(Cardinality (TLA.cup (TLA.setminus a_c1a a_c2a) (TLA.setminus a_c2a
+a_c1a)))) (QuorumsOverlap a_c1a
+a_c2a))))))
+$hyp "v'158" (/\ (TLA.in currentTerm (TLA.FuncSet Server arith.N))
+(TLA.in state (TLA.FuncSet Server (TLA.set Secondary Primary)))
+(TLA.in config (TLA.FuncSet Server (TLA.SUBSET Server)))
+(TLA.in configVersion (TLA.FuncSet Server arith.N)) (TLA.in configTerm
+(TLA.FuncSet Server arith.N)))
+$hyp "v'159" (\/ (TLA.bEx Server ((s) (TLA.bEx (TLA.SUBSET Server) ((newConfig) (TLA.bEx Version ((newVersion) (/\ (= (TLA.fapply state s)
+Primary) (ConfigQuorumCheck s) (TermQuorumCheck s) (= (TLA.fapply TLA.Succ 0)
+(Cardinality (TLA.cup (TLA.setminus newConfig (TLA.fapply config s))
+(TLA.setminus (TLA.fapply config s) newConfig)))) (TLA.in s newConfig)
+(-. (= newConfig (TLA.fapply config s))) (= a_configTermhash_primea
+(TLA.except configTerm s (TLA.fapply currentTerm s)))
+(arith.lt (TLA.fapply configVersion s) newVersion)
+(= a_configVersionhash_primea (TLA.except configVersion s newVersion))
+(= a_confighash_primea (TLA.except config s newConfig))
+(/\ (= a_currentTermhash_primea currentTerm) (= a_statehash_primea
+state)))))))))
+(TLA.bEx Server ((s) (TLA.bEx Server ((t) (TLA.bEx Term ((newTerm) (TLA.bEx Version ((newVersion) (/\ (= (TLA.fapply state t)
+Secondary) (IsNewerConfig s t) (= newTerm (TLA.fapply configTerm s))
+(= a_configTermhash_primea (TLA.except configTerm t newTerm)) (= newVersion
+(TLA.fapply configVersion s)) (= a_configVersionhash_primea
+(TLA.except configVersion t newVersion)) (= a_confighash_primea
+(TLA.except config t (TLA.fapply config s))) (/\ (= a_currentTermhash_primea
+currentTerm) (= a_statehash_primea state)))))))))))
+(TLA.bEx Server ((s) (TLA.bEx (TLA.SUBSET Server) ((Q) (TLA.bEx Term ((newTerm) (/\ (= newTerm
+(arith.add (TLA.fapply currentTerm s) (TLA.fapply TLA.Succ 0))) (TLA.in Q
+(Quorums (TLA.fapply config s))) (TLA.in s (TLA.fapply config s)) (TLA.in s
+Q) (TLA.bAll Q ((v) (CanVoteForConfig v s newTerm)))
+(= a_currentTermhash_primea (TLA.Fcn Server ((s_1) (TLA.cond (TLA.in s_1
+Q) newTerm (TLA.fapply currentTerm s_1))))) (= a_statehash_primea
+(TLA.Fcn Server ((s_1) (TLA.cond (= s_1 s) Primary (TLA.cond (TLA.in s_1
+Q) Secondary (TLA.fapply state s_1)))))) (= a_configTermhash_primea
+(TLA.except configTerm s newTerm)) (/\ (= a_confighash_primea config)
+(= a_configVersionhash_primea configVersion)))))))))
+(TLA.bEx Server ((s) (TLA.bEx Server ((t) (TLA.bEx Term ((newTerm) (/\ (/\ (arith.lt (TLA.fapply currentTerm t)
+(TLA.fapply currentTerm s)) (= newTerm (TLA.fapply currentTerm s))
+(= a_currentTermhash_primea (TLA.except currentTerm t newTerm))
+(= a_statehash_primea (TLA.except state t Secondary)))
+(/\ (= a_configVersionhash_primea configVersion) (= a_configTermhash_primea
+configTerm) (= a_confighash_primea
+config))))))))))
+$goal (TLA.in a_configTermhash_primea
+(TLA.FuncSet Server arith.N))

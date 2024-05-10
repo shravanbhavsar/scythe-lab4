@@ -1,0 +1,38 @@
+---- MODULE Dijkstra ----
+
+/* i'm trying to reproduce Fig.3 of the CAV 2015 arxiv paper:
+
+MoveBottom ==
+    /\ x[BOTTOM] = x[BOTTOM+1]
+    /\ x' = [x EXCEPT ![BOTTOM] = ~x[BOTTOM]]
+    /\ UNCHANGED up
+
+MoveTop ==
+    /\ x[TOP] # x[TOP-1]
+    /\ x' = [x EXCEPT ![TOP] = ~x[TOP]]
+    /\ UNCHANGED up    
+
+\* there are two possible moves for the "middle" processes, which we represent here with actions MoveMidA and MoveMidB
+MoveMidA(i) ==
+	/\ ((i # BOTTOM) /\ (i # TOP))
+	/\ x[i] # x[i-1]
+	/\ x' = [x EXCEPT ![i] = ~x[i]] 
+	/\ up' = [up EXCEPT ![i] = TRUE]
+
+MoveMidB(i) ==
+	/\ ((i # BOTTOM) /\ (i # TOP))
+	/\ (x[i] = x[i+1] /\ up[i] /\ ~up[i+1])
+	/\ up' = [up EXCEPT ![i] = FALSE]
+    /\ UNCHANGED x
+
+
+\* Next state relation describing the system's transitions
+Next ==
+    \/ MoveTop
+	\/ MoveBottom
+	\/ MoveMidA(1)
+	\/ MoveMidA(2)
+	\/ MoveMidB(1)
+	\/ MoveMidB(2)
+
+=============================================================================

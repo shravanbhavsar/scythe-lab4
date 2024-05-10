@@ -1,0 +1,38 @@
+[
+  {
+    "action_name": "Send(src, dst)",
+    "update_var": null,
+    "ufn": "__Send(src, dst)_g0__",
+    "gt": "has_lock[src]"
+  },
+  {
+    "action_name": "Send(src, dst)",
+    "update_var": "message",
+    "ufn": "__Send(src, dst)_message__",
+    "gt": "message \\cup {<<src, dst>>}"
+  },
+  {
+    "action_name": "Send(src, dst)",
+    "update_var": "has_lock",
+    "ufn": "__Send(src, dst)_has_lock__",
+    "gt": "[has_lock EXCEPT ![src] = FALSE]"
+  },
+  {
+    "action_name": "Recv(src, dst)",
+    "update_var": null,
+    "ufn": "__Recv(src, dst)_g0__",
+    "gt": "<<src, dst>> \\in message"
+  },
+  {
+    "action_name": "Recv(src, dst)",
+    "update_var": "message",
+    "ufn": "__Recv(src, dst)_message__",
+    "gt": "message \\ {<<src,dst>>}"
+  },
+  {
+    "action_name": "Recv(src, dst)",
+    "update_var": "has_lock",
+    "ufn": "__Recv(src, dst)_has_lock__",
+    "gt": "[has_lock EXCEPT ![dst] = TRUE]"
+  }
+]

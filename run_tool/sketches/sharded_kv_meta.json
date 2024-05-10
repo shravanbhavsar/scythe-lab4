@@ -1,0 +1,113 @@
+[
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": null,
+    "ufn": "__Reshard(k,v,n_old,n_new)_g0__",
+    "gt": "table[<<n_old,k>>] = v"
+  },
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": null,
+    "ufn": "__Reshard(k,v,n_old,n_new)_g1__",
+    "gt": "<<GIVE, k, n_old, n_new>> \\in event_queue"
+  },
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": "event_queue",
+    "ufn": "__Reshard(k,v,n_old,n_new)_event_queue__",
+    "gt": "event_queue \\ {<<GIVE, k, n_old, n_new>>}"
+  },
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": "table",
+    "ufn": "__Reshard(k,v,n_old,n_new)_table__",
+    "gt": "[table EXCEPT ![<<n_old,k>>] = Nil]"
+  },
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": "owner",
+    "ufn": "__Reshard(k,v,n_old,n_new)_owner__",
+    "gt": "[owner EXCEPT ![n_old] = owner[n_old] \\ {k}]"
+  },
+  {
+    "action_name": "Reshard(k,v,n_old,n_new)",
+    "update_var": "transfer_msg",
+    "ufn": "__Reshard(k,v,n_old,n_new)_transfer_msg__",
+    "gt": "transfer_msg \\cup {<<n_new,k,v>>}"
+  },
+  {
+    "gt": "UNCHANGED ghost_vars"
+  },
+  {
+    "action_name": "RecvTransferMsg(n, k, v)",
+    "update_var": null,
+    "ufn": "__RecvTransferMsg(n, k, v)_g0__",
+    "gt": "<<n,k,v>> \\in transfer_msg"
+  },
+  {
+    "action_name": "RecvTransferMsg(n, k, v)",
+    "update_var": "transfer_msg",
+    "ufn": "__RecvTransferMsg(n, k, v)_transfer_msg__",
+    "gt": "transfer_msg \\ {<<n,k,v>>}"
+  },
+  {
+    "action_name": "RecvTransferMsg(n, k, v)",
+    "update_var": "table",
+    "ufn": "__RecvTransferMsg(n, k, v)_table__",
+    "gt": "[table EXCEPT ![<<n,k>>] = v]"
+  },
+  {
+    "action_name": "RecvTransferMsg(n, k, v)",
+    "update_var": "owner",
+    "ufn": "__RecvTransferMsg(n, k, v)_owner__",
+    "gt": "[owner EXCEPT ![n] = owner[n] \\cup {k}]"
+  },
+  {
+    "action_name": "RecvTransferMsg(n, k, v)",
+    "update_var": "event_queue",
+    "ufn": "__RecvTransferMsg(n, k, v)_event_queue__",
+    "gt": "event_queue"
+  },
+  {
+    "gt": "UNCHANGED ghost_vars"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": null,
+    "ufn": "__Put(n, k, v)_g0__",
+    "gt": "k \\in owner[n]"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": null,
+    "ufn": "__Put(n, k, v)_g1__",
+    "gt": "<<PUT, k, v, PUT>> \\in event_queue"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": "event_queue",
+    "ufn": "__Put(n, k, v)_event_queue__",
+    "gt": "event_queue \\ {<<PUT, k, v, PUT>>}"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": "table",
+    "ufn": "__Put(n, k, v)_table__",
+    "gt": "[table EXCEPT ![<<n,k>>] = v]"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": "owner",
+    "ufn": "__Put(n, k, v)_owner__",
+    "gt": "owner"
+  },
+  {
+    "action_name": "Put(n, k, v)",
+    "update_var": "transfer_msg",
+    "ufn": "__Put(n, k, v)_transfer_msg__",
+    "gt": "transfer_msg"
+  },
+  {
+    "gt": "UNCHANGED ghost_vars"
+  }
+]

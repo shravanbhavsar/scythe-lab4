@@ -1,0 +1,74 @@
+[
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g0__",
+    "gt": "state[i] = Primary"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g1__",
+    "gt": "ConfigQuorumCheck(i)"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g2__",
+    "gt": "TermQuorumCheck(i)"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g3__",
+    "gt": "Cardinality(SymmDiff(config[i], newConfig)) <= 1"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g4__",
+    "gt": "i \\in newConfig"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g5__",
+    "gt": "newConfig # config[i]"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": "configTerm",
+    "ufn": "__Reconfig(i, newConfig, newVersion)_configTerm__",
+    "gt": "[configTerm EXCEPT ![i] = currentTerm[i]]"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": null,
+    "ufn": "__Reconfig(i, newConfig, newVersion)_g7__",
+    "gt": "newVersion > configVersion[i]"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": "configVersion",
+    "ufn": "__Reconfig(i, newConfig, newVersion)_configVersion__",
+    "gt": "[configVersion EXCEPT ![i] = newVersion]"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": "config",
+    "ufn": "__Reconfig(i, newConfig, newVersion)_config__",
+    "gt": "[config EXCEPT ![i] = newConfig]"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": "currentTerm",
+    "ufn": "__Reconfig(i, newConfig, newVersion)_currentTerm__",
+    "gt": "currentTerm"
+  },
+  {
+    "action_name": "Reconfig(i, newConfig, newVersion)",
+    "update_var": "state",
+    "ufn": "__Reconfig(i, newConfig, newVersion)_state__",
+    "gt": "state"
+  }
+]

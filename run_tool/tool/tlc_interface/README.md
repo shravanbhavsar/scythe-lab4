@@ -1,0 +1,1 @@
+Custom fork of TLC we are using is kept at https://github.com/will62794/tlaplus/tree/structured_traces. This fork hacks TLC a bit to output traces in a slightly more structured format for easier parsing. Built JAR for that fork is maintained [here](https://github.com/will62794/tlaplus/tree/structured_traces/tlatools/org.lamport.tlatools/mydist).

@@ -1,0 +1,224 @@
+[
+  {
+    "action_name": "Vote1(n)",
+    "update_var": null,
+    "ufn": "__Vote1(n)_g0__",
+    "gt": "n \\in compatible"
+  },
+  {
+    "action_name": "Vote1(n)",
+    "update_var": null,
+    "ufn": "__Vote1(n)_g1__",
+    "gt": "n \\in alive"
+  },
+  {
+    "action_name": "Vote1(n)",
+    "update_var": "vote_yes",
+    "ufn": "__Vote1(n)_vote_yes__",
+    "gt": "vote_yes \\cup {n}"
+  },
+  {
+    "action_name": "Vote1(n)",
+    "update_var": "vote_no",
+    "ufn": "__Vote1(n)_vote_no__",
+    "gt": "vote_no"
+  },
+  {
+    "action_name": "Vote1(n)",
+    "update_var": "decide_commit",
+    "ufn": "__Vote1(n)_decide_commit__",
+    "gt": "decide_commit"
+  },
+  {
+    "action_name": "Vote1(n)",
+    "update_var": "decide_abort",
+    "ufn": "__Vote1(n)_decide_abort__",
+    "gt": "decide_abort"
+  },
+  {
+    "gt": "UNCHANGED <<alive,go_commit,go_abort,abort_flag,compatible>>"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": null,
+    "ufn": "__Vote2(n)_g0__",
+    "gt": "n \\notin compatible"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": null,
+    "ufn": "__Vote2(n)_g1__",
+    "gt": "n \\in alive"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": "vote_no",
+    "ufn": "__Vote2(n)_vote_no__",
+    "gt": "vote_no \\cup {n}"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": "vote_yes",
+    "ufn": "__Vote2(n)_vote_yes__",
+    "gt": "vote_yes"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": "decide_commit",
+    "ufn": "__Vote2(n)_decide_commit__",
+    "gt": "decide_commit"
+  },
+  {
+    "action_name": "Vote2(n)",
+    "update_var": "decide_abort",
+    "ufn": "__Vote2(n)_decide_abort__",
+    "gt": "decide_abort"
+  },
+  {
+    "gt": "UNCHANGED <<alive,go_commit,go_abort,abort_flag,compatible>>"
+  },
+  {
+    "action_name": "Go1",
+    "update_var": null,
+    "ufn": "__Go1_g0__",
+    "gt": "Node \\cap go_abort = {}"
+  },
+  {
+    "action_name": "Go1",
+    "update_var": null,
+    "ufn": "__Go1_g1__",
+    "gt": "vote_yes = Node"
+  },
+  {
+    "action_name": "Go1",
+    "update_var": "go_commit",
+    "ufn": "__Go1_go_commit__",
+    "gt": "Node"
+  },
+  {
+    "action_name": "Go1",
+    "update_var": "go_abort",
+    "ufn": "__Go1_go_abort__",
+    "gt": "go_abort"
+  },
+  {
+    "action_name": "Go1",
+    "update_var": "abort_flag",
+    "ufn": "__Go1_abort_flag__",
+    "gt": "abort_flag"
+  },
+  {
+    "gt": "UNCHANGED <<vote_yes,vote_no,alive,decide_commit,decide_abort,compatible>>"
+  },
+  {
+    "action_name": "Go2",
+    "update_var": null,
+    "ufn": "__Go2_g0__",
+    "gt": "Node \\cap go_commit = {}"
+  },
+  {
+    "action_name": "Go2",
+    "update_var": null,
+    "ufn": "__Go2_g1__",
+    "gt": "(Node \\cap vote_no) \\cup (Node \\ alive) # {}"
+  },
+  {
+    "action_name": "Go2",
+    "update_var": "go_abort",
+    "ufn": "__Go2_go_abort__",
+    "gt": "Node"
+  },
+  {
+    "action_name": "Go2",
+    "update_var": "abort_flag",
+    "ufn": "__Go2_abort_flag__",
+    "gt": "TRUE"
+  },
+  {
+    "action_name": "Go2",
+    "update_var": "go_commit",
+    "ufn": "__Go2_go_commit__",
+    "gt": "go_commit"
+  },
+  {
+    "gt": "UNCHANGED <<vote_yes,vote_no,alive,decide_commit,decide_abort,compatible>>"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": null,
+    "ufn": "__Commit(n)_g0__",
+    "gt": "n \\in alive"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": null,
+    "ufn": "__Commit(n)_g1__",
+    "gt": "n \\in go_commit"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": "decide_commit",
+    "ufn": "__Commit(n)_decide_commit__",
+    "gt": "decide_commit \\cup {n}"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": "vote_no",
+    "ufn": "__Commit(n)_vote_no__",
+    "gt": "vote_no"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": "vote_yes",
+    "ufn": "__Commit(n)_vote_yes__",
+    "gt": "vote_yes"
+  },
+  {
+    "action_name": "Commit(n)",
+    "update_var": "decide_abort",
+    "ufn": "__Commit(n)_decide_abort__",
+    "gt": "decide_abort"
+  },
+  {
+    "gt": "UNCHANGED <<alive,go_commit,go_abort,compatible,abort_flag>>"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": null,
+    "ufn": "__Abort(n)_g0__",
+    "gt": "n \\in alive"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": null,
+    "ufn": "__Abort(n)_g1__",
+    "gt": "n \\in go_abort"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": "decide_abort",
+    "ufn": "__Abort(n)_decide_abort__",
+    "gt": "decide_abort \\cup {n}"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": "vote_no",
+    "ufn": "__Abort(n)_vote_no__",
+    "gt": "vote_no"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": "vote_yes",
+    "ufn": "__Abort(n)_vote_yes__",
+    "gt": "vote_yes"
+  },
+  {
+    "action_name": "Abort(n)",
+    "update_var": "decide_commit",
+    "ufn": "__Abort(n)_decide_commit__",
+    "gt": "decide_commit"
+  },
+  {
+    "gt": "UNCHANGED <<alive,go_commit,go_abort,compatible,abort_flag>>"
+  }
+]

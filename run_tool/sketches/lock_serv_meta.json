@@ -1,0 +1,167 @@
+[
+  {
+    "action_name": "SendLock(n)",
+    "update_var": "lock_msg",
+    "ufn": "__SendLock(n)_lock_msg__",
+    "gt": "[lock_msg EXCEPT ![n] = TRUE]"
+  },
+  {
+    "action_name": "SendLock(n)",
+    "update_var": "grant_msg",
+    "ufn": "__SendLock(n)_grant_msg__",
+    "gt": "grant_msg"
+  },
+  {
+    "action_name": "SendLock(n)",
+    "update_var": "holds_lock",
+    "ufn": "__SendLock(n)_holds_lock__",
+    "gt": "holds_lock"
+  },
+  {
+    "action_name": "SendLock(n)",
+    "update_var": "unlock_msg",
+    "ufn": "__SendLock(n)_unlock_msg__",
+    "gt": "unlock_msg"
+  },
+  {
+    "gt": "UNCHANGED server_holds_lock"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": null,
+    "ufn": "__RecvLock(n)_g0__",
+    "gt": "server_holds_lock"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": null,
+    "ufn": "__RecvLock(n)_g1__",
+    "gt": "lock_msg[n]"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": "server_holds_lock",
+    "ufn": "__RecvLock(n)_server_holds_lock__",
+    "gt": "FALSE"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": "lock_msg",
+    "ufn": "__RecvLock(n)_lock_msg__",
+    "gt": "[lock_msg EXCEPT ![n] = FALSE]"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": "grant_msg",
+    "ufn": "__RecvLock(n)_grant_msg__",
+    "gt": "[grant_msg EXCEPT ![n] = TRUE]"
+  },
+  {
+    "action_name": "RecvLock(n)",
+    "update_var": "unlock_msg",
+    "ufn": "__RecvLock(n)_unlock_msg__",
+    "gt": "unlock_msg"
+  },
+  {
+    "gt": "UNCHANGED holds_lock"
+  },
+  {
+    "action_name": "RecvGrant(n)",
+    "update_var": null,
+    "ufn": "__RecvGrant(n)_g0__",
+    "gt": "grant_msg[n]"
+  },
+  {
+    "action_name": "RecvGrant(n)",
+    "update_var": "grant_msg",
+    "ufn": "__RecvGrant(n)_grant_msg__",
+    "gt": "[grant_msg EXCEPT ![n] = FALSE]"
+  },
+  {
+    "action_name": "RecvGrant(n)",
+    "update_var": "holds_lock",
+    "ufn": "__RecvGrant(n)_holds_lock__",
+    "gt": "[holds_lock EXCEPT ![n] = TRUE]"
+  },
+  {
+    "action_name": "RecvGrant(n)",
+    "update_var": "lock_msg",
+    "ufn": "__RecvGrant(n)_lock_msg__",
+    "gt": "lock_msg"
+  },
+  {
+    "action_name": "RecvGrant(n)",
+    "update_var": "unlock_msg",
+    "ufn": "__RecvGrant(n)_unlock_msg__",
+    "gt": "unlock_msg"
+  },
+  {
+    "gt": "UNCHANGED server_holds_lock"
+  },
+  {
+    "action_name": "Unlock(n)",
+    "update_var": null,
+    "ufn": "__Unlock(n)_g0__",
+    "gt": "holds_lock[n]"
+  },
+  {
+    "action_name": "Unlock(n)",
+    "update_var": "holds_lock",
+    "ufn": "__Unlock(n)_holds_lock__",
+    "gt": "[holds_lock EXCEPT ![n] = FALSE]"
+  },
+  {
+    "action_name": "Unlock(n)",
+    "update_var": "unlock_msg",
+    "ufn": "__Unlock(n)_unlock_msg__",
+    "gt": "[unlock_msg EXCEPT ![n] = TRUE]"
+  },
+  {
+    "action_name": "Unlock(n)",
+    "update_var": "lock_msg",
+    "ufn": "__Unlock(n)_lock_msg__",
+    "gt": "lock_msg"
+  },
+  {
+    "action_name": "Unlock(n)",
+    "update_var": "grant_msg",
+    "ufn": "__Unlock(n)_grant_msg__",
+    "gt": "grant_msg"
+  },
+  {
+    "gt": "UNCHANGED server_holds_lock"
+  },
+  {
+    "action_name": "RecvUnlock(n)",
+    "update_var": null,
+    "ufn": "__RecvUnlock(n)_g0__",
+    "gt": "unlock_msg[n]"
+  },
+  {
+    "action_name": "RecvUnlock(n)",
+    "update_var": "unlock_msg",
+    "ufn": "__RecvUnlock(n)_unlock_msg__",
+    "gt": "[unlock_msg EXCEPT ![n] = FALSE]"
+  },
+  {
+    "action_name": "RecvUnlock(n)",
+    "update_var": "server_holds_lock",
+    "ufn": "__RecvUnlock(n)_server_holds_lock__",
+    "gt": "TRUE"
+  },
+  {
+    "action_name": "RecvUnlock(n)",
+    "update_var": "lock_msg",
+    "ufn": "__RecvUnlock(n)_lock_msg__",
+    "gt": "lock_msg"
+  },
+  {
+    "action_name": "RecvUnlock(n)",
+    "update_var": "grant_msg",
+    "ufn": "__RecvUnlock(n)_grant_msg__",
+    "gt": "grant_msg"
+  },
+  {
+    "gt": "UNCHANGED holds_lock"
+  }
+]

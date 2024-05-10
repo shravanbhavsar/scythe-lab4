@@ -1,0 +1,218 @@
+[
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "vote_request_msg",
+    "ufn": "__SendRequestVote(src, dst)_vote_request_msg__",
+    "gt": "(vote_request_msg \\cup {<<src, dst>>}) \\* gt: vote_request_msg \\cup {<<src, dst>>}"
+  },
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "voted",
+    "ufn": "__SendRequestVote(src, dst)_voted__",
+    "gt": "voted"
+  },
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "vote_msg",
+    "ufn": "__SendRequestVote(src, dst)_vote_msg__",
+    "gt": "vote_msg"
+  },
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "votes",
+    "ufn": "__SendRequestVote(src, dst)_votes__",
+    "gt": "votes"
+  },
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "leader",
+    "ufn": "__SendRequestVote(src, dst)_leader__",
+    "gt": "leader"
+  },
+  {
+    "action_name": "SendRequestVote(src, dst)",
+    "update_var": "decided",
+    "ufn": "__SendRequestVote(src, dst)_decided__",
+    "gt": "decided"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": null,
+    "ufn": "__SendVote(src, dst)_g0__",
+    "gt": "~ (src \\in voted) \\* gt: ~ (src \\in voted)"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": null,
+    "ufn": "__SendVote(src, dst)_g1__",
+    "gt": "<<dst, src>> \\in vote_request_msg \\* gt: <<dst,src>> \\in vote_request_msg"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "vote_msg",
+    "ufn": "__SendVote(src, dst)_vote_msg__",
+    "gt": "(vote_msg \\cup {<<src, dst>>}) \\* gt: vote_msg \\cup {<<src,dst>>}"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "voted",
+    "ufn": "__SendVote(src, dst)_voted__",
+    "gt": "voted \\cup {src} \\* gt: voted \\cup {src}"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "votes",
+    "ufn": "__SendVote(src, dst)_votes__",
+    "gt": "votes"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "leader",
+    "ufn": "__SendVote(src, dst)_leader__",
+    "gt": "leader"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "decided",
+    "ufn": "__SendVote(src, dst)_decided__",
+    "gt": "decided"
+  },
+  {
+    "action_name": "SendVote(src, dst)",
+    "update_var": "vote_request_msg",
+    "ufn": "__SendVote(src, dst)_vote_request_msg__",
+    "gt": "vote_request_msg"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": null,
+    "ufn": "__RecvVote(n, sender)_g0__",
+    "gt": "<<sender, n>> \\in vote_msg \\* gt: <<sender,n>> \\in vote_msg"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "votes",
+    "ufn": "__RecvVote(n, sender)_votes__",
+    "gt": "[votes EXCEPT ![n] = (votes[n] \\cup {sender})] \\* gt: [votes EXCEPT ![n] = votes[n] \\cup {sender}]"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "vote_request_msg",
+    "ufn": "__RecvVote(n, sender)_vote_request_msg__",
+    "gt": "vote_request_msg"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "voted",
+    "ufn": "__RecvVote(n, sender)_voted__",
+    "gt": "voted"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "vote_msg",
+    "ufn": "__RecvVote(n, sender)_vote_msg__",
+    "gt": "vote_msg"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "leader",
+    "ufn": "__RecvVote(n, sender)_leader__",
+    "gt": "leader"
+  },
+  {
+    "action_name": "RecvVote(n, sender)",
+    "update_var": "decided",
+    "ufn": "__RecvVote(n, sender)_decided__",
+    "gt": "decided"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": null,
+    "ufn": "__BecomeLeader(n, Q)_g0__",
+    "gt": "(Q \\subseteq votes[n]) \\* gt: Q \\subseteq votes[n]"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "leader",
+    "ufn": "__BecomeLeader(n, Q)_leader__",
+    "gt": "(leader \\cup {n}) \\* gt: leader \\cup {n}"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "vote_request_msg",
+    "ufn": "__BecomeLeader(n, Q)_vote_request_msg__",
+    "gt": "vote_request_msg"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "voted",
+    "ufn": "__BecomeLeader(n, Q)_voted__",
+    "gt": "voted"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "vote_msg",
+    "ufn": "__BecomeLeader(n, Q)_vote_msg__",
+    "gt": "vote_msg"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "votes",
+    "ufn": "__BecomeLeader(n, Q)_votes__",
+    "gt": "votes"
+  },
+  {
+    "action_name": "BecomeLeader(n, Q)",
+    "update_var": "decided",
+    "ufn": "__BecomeLeader(n, Q)_decided__",
+    "gt": "decided"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": null,
+    "ufn": "__Decide(n, v)_g0__",
+    "gt": "n \\in leader"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": null,
+    "ufn": "__Decide(n, v)_g1__",
+    "gt": "decided[n] = {}"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "decided",
+    "ufn": "__Decide(n, v)_decided__",
+    "gt": "[decided EXCEPT ![n] = (decided[n] \\cup {v})] \\* gt: [decided EXCEPT ![n] = decided[n] \\cup {v}]"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "vote_request_msg",
+    "ufn": "__Decide(n, v)_vote_request_msg__",
+    "gt": "vote_request_msg"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "voted",
+    "ufn": "__Decide(n, v)_voted__",
+    "gt": "voted"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "vote_msg",
+    "ufn": "__Decide(n, v)_vote_msg__",
+    "gt": "vote_msg"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "votes",
+    "ufn": "__Decide(n, v)_votes__",
+    "gt": "votes"
+  },
+  {
+    "action_name": "Decide(n, v)",
+    "update_var": "leader",
+    "ufn": "__Decide(n, v)_leader__",
+    "gt": "leader"
+  }
+]
