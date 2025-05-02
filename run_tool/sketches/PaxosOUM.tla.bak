@@ -1,0 +1,221 @@
+--------------------------- MODULE PaxosOUM ----------------------------
+(***************************************************************************)
+(* Paxos consensus + Ordered Unreliable Multicast (OUM)                     *)
+(***************************************************************************)
+
+EXTENDS Integers, Sequences, TLC
+
+(***************************************************************************)
+(* CONSTANTS                                                                *)
+(***************************************************************************)
+CONSTANTS
+    Value,          \* the set of values Paxos may choose
+    Acceptor,       \* the set of acceptor IDs
+    Quorum,         \* a set of quorums (subsets of Acceptor)
+    ClientRequest   \* abstract token for an OUM request
+
+ASSUME
+    /\ \A Q \in Quorum : Q \subseteq Acceptor
+    /\ \A Q1, Q2 \in Quorum : Q1 \cap Q2 /= {}
+
+(***************************************************************************)
+(* Paxos definitions                                                       *)
+(***************************************************************************)
+Ballot == Nat
+None   == CHOOSE v : v \notin Ballot
+
+Message ==
+    [type  |-> "1a", bal  |-> Ballot]
+  \cup [type  |-> "1b", acc  |-> Acceptor, bal |-> Ballot,
+     mbal  |-> Ballot \cup {-1}, mval |-> Value \cup {None}]
+  \cup [type  |-> "2a", bal  |-> Ballot, val  |-> Value]
+  \cup [type  |-> "2b", acc  |-> Acceptor, bal |-> Ballot, val |-> Value]
+
+(***************************************************************************)
+(* State variables: Paxos + OUM                                            *)
+(***************************************************************************)
+VARIABLES
+  maxBal,     \* Paxos: highest promised ballot per acceptor
+  maxVBal,    \* Paxos: highest accepted ballot per acceptor
+  maxVal,     \* Paxos: value accepted at that ballot
+  msgs,       \* Paxos: all messages sent
+
+  seqNo,      \* OUM: next sequence number to assign
+  pending,    \* OUM: set of pending requests [req |-> ClientRequest, seq |-> seqNo]
+  delivered   \* OUM: map Acceptor -> SUBSET Nat
+
+(***************************************************************************)
+(* The tuple of all vars                                                    *)
+(***************************************************************************)
+vars == << maxBal, maxVBal, maxVal, msgs, seqNo, pending, delivered >>
+
+(***************************************************************************)
+(* Type invariant                                                           *)
+(***************************************************************************)
+TypeOK ==
+    /\ maxBal    \in [Acceptor -> Ballot \cup {-1}]
+    /\ maxVBal   \in [Acceptor -> Ballot \cup {-1}]
+    /\ maxVal    \in [Acceptor -> Value  \cup {None}]
+    /\ msgs      \subseteq Message
+    /\ seqNo     \in Nat
+    /\ pending   \subseteq { [req : ClientRequest, seq : Nat] }
+    /\ delivered \in [Acceptor -> SUBSET Nat]
+
+(***************************************************************************)
+(* Initialization                                                           *)
+(***************************************************************************)
+Init ==
+    /\ maxBal    = [a \in Acceptor |-> -1]
+    /\ maxVBal   = [a \in Acceptor |-> -1]
+    /\ maxVal    = [a \in Acceptor |-> None]
+    /\ msgs      = {}
+
+    /\ seqNo     = 0
+    /\ pending   = {}
+    /\ delivered = [a \in Acceptor |-> {}]
+
+(***************************************************************************)
+(* Paxos send helper                                                        *)
+(***************************************************************************)
+Send(m) == msgs' = msgs \cup {m}
+
+(***************************************************************************)
+(* Paxos Phase 1a                                                           *)
+(***************************************************************************)
+Phase1a(b) ==
+    /\ Send([type |-> "1a", bal |-> b])
+    /\ UNCHANGED <<maxBal, maxVBal, maxVal, seqNo, pending, delivered>>
+
+(***************************************************************************)
+(* Paxos Phase 1b                                                           *)
+(***************************************************************************)
+Phase1b(a) ==
+    /\ \E m \in msgs :
+         /\ m.type = "1a"
+         /\ m.bal > maxBal[a]
+         /\ maxBal' = [maxBal EXCEPT ![a] = m.bal]
+         /\ Send([ type  |-> "1b",
+                   acc   |-> a,
+                   bal   |-> m.bal,
+                   mbal  |-> maxVBal[a],
+                   mval  |-> maxVal[a] ])
+    /\ UNCHANGED <<maxVBal, maxVal, seqNo, pending, delivered>>
+
+(***************************************************************************)
+(* Paxos Phase 2a                                                           *)
+(***************************************************************************)
+Phase2a(b, v) ==
+    /\ ~(\E m \in msgs : m.type = "2a" /\ m.bal = b)
+    /\ \E Q \in Quorum :
+         LET Q1b  == { mm \in msgs : mm.type = "1b" /\ mm.acc \in Q /\ mm.bal = b }
+             Q1bv == { mm \in Q1b : mm.mbal >= 0 }
+         IN  /\ \A a \in Q : \E mm \in Q1b : mm.acc = a
+             /\ \/ Q1bv = {}
+                \/ \E mm \in Q1bv :
+                     /\ mm.mval = v
+                     /\ \A nn \in Q1bv : mm.mbal >= nn.mbal
+    /\ Send([type |-> "2a", bal |-> b, val |-> v])
+    /\ UNCHANGED <<maxBal, maxVBal, maxVal, seqNo, pending, delivered>>
+
+(***************************************************************************)
+(* Paxos Phase 2b                                                           *)
+(***************************************************************************)
+Phase2b(a) ==
+    \E m \in msgs :
+      /\ m.type = "2a"
+      /\ m.bal >= maxBal[a]
+      /\ maxBal'   = [maxBal   EXCEPT ![a] = m.bal]
+      /\ maxVBal'  = [maxVBal  EXCEPT ![a] = m.bal]
+      /\ maxVal'   = [maxVal   EXCEPT ![a] = m.val]
+      /\ Send([type |-> "2b", acc |-> a, bal |-> m.bal, val |-> m.val])
+    /\ UNCHANGED <<seqNo, pending, delivered>>
+
+(***************************************************************************)
+(* Paxos next                                                              *)
+(***************************************************************************)
+PaxosNext ==
+    \/ \E b \in Ballot              : Phase1a(b)
+    \/ \E a \in Acceptor            : Phase1b(a)
+    \/ \E b \in Ballot, v \in Value : Phase2a(b, v)
+    \/ \E a \in Acceptor            : Phase2b(a)
+
+(***************************************************************************)
+(* OUM send                                                                *)
+(***************************************************************************)
+OUMSend(req) ==
+    /\ seqNo'   = seqNo + 1
+    /\ pending' = pending \cup { [req |-> req, seq |-> seqNo'] }
+    /\ UNCHANGED <<maxBal, maxVBal, maxVal, msgs, delivered>>
+
+(***************************************************************************)
+(* OUM deliver                                                             *)
+(***************************************************************************)
+OUMDeliver ==
+    \E r \in pending :
+      LET s == r.seq IN
+      \E S \in SUBSET Acceptor :
+        /\ S /= {}
+        /\ delivered' = [ a \in Acceptor |-> 
+             IF a \in S THEN delivered[a] \cup {s} ELSE delivered[a] ]
+        /\ pending'   = pending \ {r}
+        /\ UNCHANGED <<maxBal, maxVBal, maxVal, msgs, seqNo>>
+
+(***************************************************************************)
+(* OUM next                                                                *)
+(***************************************************************************)
+OUMNext ==
+    OUMSend(ClientRequest)
+    \/ OUMDeliver
+
+(***************************************************************************)
+(* Combined Next                                                           *)
+(***************************************************************************)
+Next == PaxosNext \/ OUMNext
+
+(***************************************************************************)
+(* Full Spec                                                               *)
+(***************************************************************************)
+Spec == Init /\ [][Next]_vars
+
+(***************************************************************************)
+(* Paxos→Voting refinement                                                 *)
+(***************************************************************************)
+votes ==
+  [ a \in Acceptor |-> { <<mm.bal, mm.val>> : mm \in msgs
+                        /\ mm.type = "2b" /\ mm.acc = a } ]
+
+(***************************************************************************)
+(* Instantiate Voting                                                      *)
+(***************************************************************************)
+V == INSTANCE Voting
+
+(***************************************************************************)
+(* Paxos invariant                                                          *)
+(***************************************************************************)
+Inv ==
+  /\ TypeOK
+  /\ \A a \in Acceptor : maxBal[a] >= maxVBal[a]
+  /\ \A a \in Acceptor :
+       IF maxVBal[a] = -1
+       THEN maxVal[a] = None
+       ELSE <<maxVBal[a], maxVal[a]>> \in votes[a]
+  /\ \A m \in msgs :
+       /\ (m.type = "1b") =>
+            /\ maxBal[m.acc] >= m.bal
+            /\ (m.mbal >= 0) => <<m.mbal, m.mval>> \in votes[m.acc]
+       /\ (m.type = "2a") =>
+            /\ \E Q \in Quorum : V!ShowsSafeAt(Q, m.bal, m.val)
+            /\ \A mm \in msgs : (mm.type = "2a" /\ mm.bal = m.bal)
+                               => mm.val = m.val
+       /\ (m.type = "2b") =>
+            /\ maxVBal[m.acc] >= m.bal
+            /\ \E mm \in msgs : (mm.type = "2a" /\ mm.bal = m.bal
+                                 /\ mm.val = m.val)
+
+(***************************************************************************)
+(* Theorems                                                                *)
+(***************************************************************************)
+THEOREM Invariance    == Spec => []Inv
+THEOREM Implementation == Spec => V!Spec
+
+=============================================================================

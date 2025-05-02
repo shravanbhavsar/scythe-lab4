@@ -1,31 +1,39 @@
 ---- MODULE OUM ----
-EXTENDS Naturals, Sequences, TLC
+EXTENDS Naturals, Sequences, TLC, Paxos
 
-CONSTANTS Acceptor, ClientRequest
+CONSTANTS
+  ClientRequest   \* abstract token for a client request
 
-VARIABLES seqNo, delivered, pending
+VARIABLES
+  seqNo,           \* next sequence number to assign
+  pending,         \* set of records [ req |-> ClientRequest, seq |-> seqNo ]
+  delivered        \* map: Acceptor -> SUBSET of sequence numbers
 
+================================================================================
 InitOUM ==
-  /\ seqNo    = 0
-  /\ pending  = {}
-  /\ delivered = [a \in Acceptor |-> {}]
+  /\ seqNo     = 0
+  /\ pending   = {} 
+  /\ delivered = [ a \in Acceptor |-> {} ]
 
-\* Associate each multicast with next seqNo
 OUMSend(req) ==
-  /\ seqNo' = seqNo + 1
-  /\ pending' = pending ∪ {[req |-> seqNo']}
+  /\ seqNo'    = seqNo + 1
+  /\ pending'  = pending \cup { [ req |-> req, seq |-> seqNo' ] }
   /\ UNCHANGED delivered
 
-\* Deliver next sequence to a subset S of acceptors
 OUMDeliver ==
-  \E req \in DOMAIN pending :
-    LET s == pending[req] IN
-      /\ \* Choose any subset S (possibly all) to deliver
-         \E S \subseteq Acceptor : 
-           delivered' = [delivered EXCEPT ![a] = delivered[a] ∪ {s} 
-                         FOR a \in S]
-      /\ pending' = pending \ {req}
+  ∃ r ∈ pending :
+    LET s == r.seq IN
+      ∃ S ∈ SUBSET Acceptor :
+        /\ S ≠ {} 
+        /\ delivered' =
+             [ a ∈ Acceptor |-> 
+                 IF a ∈ S 
+                 THEN delivered[a] ∪ {s}
+                 ELSE delivered[a]
+             ]
+        /\ pending' = pending \ {r}
 
-NextOUM == OUMSend(ClientRequest) ∨ OUMDeliver
+NextOUM == OUMSend(ClientRequest) \/ OUMDeliver
+
 SpecOUM == InitOUM /\ [][NextOUM]_(<<seqNo, pending, delivered>>)
 ====
