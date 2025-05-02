@@ -421,7 +421,7 @@ OUMDeliver ==
 
 NextOUM == OUMSend(ClientRequest) \/ OUMDeliver
 
-SpecOUM == InitOUM /\ [][NextOUM ∧ seqNo ≤ 1]_<<seqNo,pending,delivered>>
+SpecOUM == InitOUM /\ [][NextOUM ∧ seqNo ≤ MaxSeq]_<<seqNo,pending,delivered>>
 
 
 AllVars == << maxBal, maxVBal, maxVal, msgs, seqNo, pending, delivered >>
