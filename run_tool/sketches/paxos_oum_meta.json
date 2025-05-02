@@ -1,0 +1,27 @@
+[
+    {
+      "action_name": "Phase1a(b)",
+      "update_var": null,
+      "ufn": "HOLE_Ph1a",
+      "gt": "TRUE"
+    },
+    {
+      "action_name": "Phase1b(a)",
+      "update_var": null,
+      "ufn": "HOLE_Ph1b",
+      "gt": "TRUE"
+    },
+    {
+      "action_name": "Phase2a(b, v)",
+      "update_var": null,
+      "ufn": "HOLE_Ph2a",
+      "gt": "TRUE"
+    },
+    {
+      "action_name": "Phase2b(a)",
+      "update_var": null,
+      "ufn": "HOLE_Ph2b",
+      "gt": "TRUE"
+    }
+  ]
+  
