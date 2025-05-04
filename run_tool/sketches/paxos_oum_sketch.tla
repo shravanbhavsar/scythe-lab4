@@ -40,32 +40,44 @@ Init ==
 (* Paxos “holes”                                                            *)
 (***************************************************************************)
 Phase1a(b) ==
-  /\ HOLE_Ph1a(b)
   /\ Send([ type  |-> "1a", bal |-> b ])
-  /\ UNCHANGED vars
+  /\ UNCHANGED <<maxBal, maxVBal, maxVal>>
 
 Phase1b(a) ==
-  /\ HOLE_Ph1b(a)
-  /\ Send([ type  |-> "1b",
-            acc   |-> a,
-            bal   |-> b,
-            mbal  |-> mb,
-            mval  |-> mv ])
-  /\ UNCHANGED vars
+  /\ \E m \in msgs :
+    /\ m.type = "1a"
+    /\ m.bal > maxBal[a]
+    /\ maxBal' = [maxBal EXCEPT ![a] = m.bal]
+    /\ Send([type |-> "1b", acc |-> a, bal |-> m.bal,
+             mbal |-> maxVBal[a], mval |-> maxVal[a]])
+  /\ UNCHANGED <<maxVBal, maxVal>>
 
 Phase2a(b, v) ==
-  /\ HOLE_Ph2a(b, v)
+  /\ ~ \E m \in msgs : m.type = "2a" /\ m.bal = b
+  /\ \E Q \in Quorum :
+      LET Q1b == {m \in msgs : /\ m.type = "1b"
+                               /\ m.acc \in Q
+                               /\ m.bal = b}
+          Q1bv == {m \in Q1b : m.mbal >= 0}
+      IN  /\ \A a \in Q : \E m \in Q1b : m.acc = a
+          /\ \/ Q1bv = {}
+             \/ \E m \in Q1bv :
+                /\ m.mval = v
+                /\ \A mm \in Q1bv : m.mbal >= mm.mbal
   /\ Send([ type  |-> "2a", bal |-> b, val |-> v ])
-  /\ UNCHANGED vars
+  /\ UNCHANGED <<maxBal, maxVBal, maxVal>>
 
 Phase2b(a) ==
-  /\ HOLE_Ph2b(a)
-  /\ Send([ type  |-> "2b",
-            acc   |-> a,
-            bal   |-> b,
-            val   |-> v ])
-  /\ UNCHANGED vars
-
+   \E m \in msgs :
+       /\ m.type = "2a"
+       /\ __SafeAt__ \* gt: m.bal >= maxBal[a]
+       /\ m.bal >= maxBal[a]
+       /\ maxBal' = [maxBal EXCEPT ![a] = m.bal]
+       /\ maxVBal' = [maxVBal EXCEPT ![a] = m.bal]
+       /\ maxVal' = [maxVal EXCEPT ![a] = m.val]
+       /\ Send([type |-> "2b", acc |-> a,
+               bal |-> m.bal, val |-> m.val])
+`
 (***************************************************************************)
 (* Paxos send helper                                                        *)
 (***************************************************************************)

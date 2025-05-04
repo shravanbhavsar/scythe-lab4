@@ -22,16 +22,28 @@ constants = [
 ]
 
 # 3) Any extra invariants/assumes for the learner? (none here)
-assumes = []
+assumes = [
+    ["!=", "n1", "n2", "n3"],
+    ["=",
+        "Node",
+        ["set.union",
+          ["set.singleton", "n1"],
+          ["set.singleton", "n2"],
+          ["set.singleton", "n3"]
+        ]
+    ],
+]
 
 # 4) Action parameter lists for each action
 act_params = {
+    "Inital predicate": [],
     "Phase1a"   : ["b"],
     "Phase1b"   : ["a"],
     "Phase2a"   : ["b","v"],
     "Phase2b"   : ["a"],
+    "Send"      : ["m"],
     "OUMSend"   : ["req"],
-    "OUMDeliver": ["r","S"],
+    "OUMDeliver": [],
 }
 
 # 5) Hole‐metadata: for each HOLE_<…> the learner needs
