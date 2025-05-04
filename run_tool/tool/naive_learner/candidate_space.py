@@ -15,9 +15,9 @@ from .dovetail import interleave
 class CandidateSpace:
 
     def __init__(
-            self, sketch, functars, constants, logic, hole_infos, 
+            self, sketch, functars, constants, logic, hole_infos,
             assumptions=None, optimize=None):
-        
+
         self.optimize = optimize
         if optimize is None:
             self.optimize = True
@@ -39,7 +39,7 @@ class CandidateSpace:
         self.hole_infos = hole_infos
 
         self._protocols = set()
-        
+
         self.queue = multiprocessing.Queue()
         t1 = multiprocessing.Process(
             target=self.producer, daemon=True) # type: ignore
@@ -63,7 +63,7 @@ class CandidateSpace:
         if not isinstance(val, str):
             return False
         return any(val == c[0] for c in self._constants)
-    
+
     def get_constant_map(self):
         constant_map = {}
         for assume in self._assumptions:
@@ -80,7 +80,7 @@ class CandidateSpace:
             if c[0] not in constant_map:
                 constant_map[c[0]] = c[0]
         return constant_map
-    
+
     # TODO: this should take advantage of smart_lattice_slices
     def _compute_expr_count(self, n):
         count = 0
@@ -102,7 +102,7 @@ class CandidateSpace:
             count += inner_count
 
         self._expr_counts[n] = count
-    
+
     def count_exprs(self, n):
         '''Returns the number of expressions in the grammar of size n.
         '''
@@ -110,7 +110,7 @@ class CandidateSpace:
             self._compute_expr_count(n)
         return self._expr_counts[n]
 
-                
+
     def get_size(self):
         if self._size is None:
             self._compute_size()
@@ -137,8 +137,10 @@ class CandidateSpace:
     def mk_generator(self):
         grammars = []
         ids = []
+        for i, f in enumerate(self.functars):
+            print(f'grammar {i + 1}: {f}')
         exp_id = hash(
-            tuple([hash(nested_list_to_nested_tuple(f[3])) 
+            tuple([hash(nested_list_to_nested_tuple(f[3]))
             for f in self.functars]))
         hole_infos = [
             {
@@ -181,7 +183,7 @@ class CandidateSpace:
                 f"Invalid hole name: {hole_name}."
                 " Must appear exactly once in the sketch."
                 f" Found {self.sketch.count(hole_name)} instances.")
-        
+
     def _instantiate_sketch(self, sygus_solutions):
         if len(self.functars) != len(sygus_solutions.items()):
             raise ValueError(
@@ -196,7 +198,7 @@ class CandidateSpace:
     def _check_clause(self, clause, sygus_solutions):
         ufn, inputs, output = clause
         new_expression = sygus_solutions[ufn]
-        
+
         eval = eval_expression(new_expression, inputs)
 
         return eval != output
@@ -214,7 +216,7 @@ class CandidateSpace:
         # print("\nentered pick")
         self.cand_num += 1
         sygus_solutions = self.generate(timeout=timeout)
-        while (sygus_solutions is not None 
+        while (sygus_solutions is not None
                and not self._check_constraints(sygus_solutions)):
             self._elim_before_model_checking += 1
             sygus_solutions = self.generate(timeout=timeout)
@@ -222,7 +224,7 @@ class CandidateSpace:
         if sygus_solutions is None:
             return None, None
         return self._instantiate_sketch(sygus_solutions)
-    
+
     def producer(self):
         error = None
         while True:
@@ -267,7 +269,7 @@ class CandidateSpace:
 
         if x is None:
             return None
-        
+
         # if self.is_repeat(x):
         #     assert False, "Repeated candidate"
 
@@ -287,21 +289,21 @@ class CandidateSpace:
             return {
                 '__Unlock(n)_g0__': ['select', 'holds_lock', 'n'],
                 '__Unlock(n)_grant_msg__': 'grant_msg',
-                '__Unlock(n)_holds_lock__': 
+                '__Unlock(n)_holds_lock__':
                     ['store', 'holds_lock', 'n', ('Bool', False)],
                 '__Unlock(n)_lock_msg__': 'lock_msg',
-                '__Unlock(n)_unlock_msg__': 
+                '__Unlock(n)_unlock_msg__':
                     ['store', 'unlock_msg', 'n', ('Bool', True)]}
         return {
             '__Unlock(n)_g0__': ['not', ['select', 'grant_msg', 'n']],
             '__Unlock(n)_grant_msg__': 'grant_msg',
             '__Unlock(n)_holds_lock__': 'holds_lock',
-            '__Unlock(n)_lock_msg__': 
+            '__Unlock(n)_lock_msg__':
                 ['store', 'lock_msg', 'n', ('Bool', False)],
             '__Unlock(n)_unlock_msg__': 'unlock_msg'
         }
 
     def prune(self, con):
-        self._constraints.append(con) 
+        self._constraints.append(con)
 
 

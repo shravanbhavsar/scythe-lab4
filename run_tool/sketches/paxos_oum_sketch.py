@@ -9,16 +9,16 @@ from pathlib import Path
 dir_path = Path(__file__).resolve().parent
 PREFIX   = "paxos_oum_sketch"
 
-sketch = (dir_path / f"{PREFIX}.tla").read_text()
-config = (dir_path / f"{PREFIX}.cfg").read_text()
+sketch = open(dir_path / f"{PREFIX}.tla", "r").read()
+config = open(dir_path / f"{PREFIX}.cfg", "r").read()
 
 # 2) Candidate‐generation needs a constant map: each TLA+ CONSTANT → its domain
 constants = [
-    ("Value",         [1, 2]),
-    ("Acceptor",      ["A", "B", "C"]),
-    ("Quorum",        [["A","B"], ["A","C"], ["B","C"]]),
-    ("ClientRequest", ["req0"]),
-    ("MaxSeq",        [1]),
+    ("Value", ("Set", "Int")),
+    ("Acceptor", ("Set", "Int")),
+    ("Quorum",  ("Set", ("Set", "Int"))),
+    ("ClientRequest", "Int"),
+    ("MaxSeq", "Int"),
 ]
 
 # 3) Any extra invariants/assumes for the learner? (none here)

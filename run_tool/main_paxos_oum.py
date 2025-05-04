@@ -2,25 +2,28 @@
 import sys
 import json
 
-from experiments_common import mk_run_experiment
-from sketches.paxos_oum_sketch import (
-    sketch, holes, constants, assumes, act_params, config as tla_config
-)
+from sketches.paxos_oum_sketch import sketch
+from sketches.paxos_oum_sketch import config as tla_config
+from sketches.paxos_oum_sketch import constants
+from sketches.paxos_oum_sketch import assumes
+from sketches.paxos_oum_sketch import act_params
+from sketches.paxos_oum_sketch import holes
 
-def mk_run_experiment_paxos_oum(holes_to_poke, timeout=None, optimize=False, extracheck=False):
+from experiments_common import mk_run_experiment
+
+def mk_run_experiment_paxos_oum(holes_to_poke, timeout=None, optimize=False):
     return mk_run_experiment(
         sketch, holes, holes_to_poke,
-        constants, assumes,
-        tla_module="PaxosOUM", tla_config=tla_config,
-        act_params=act_params,
-        learner="naive",
-        logic="ALIAFS",
-        timeout=timeout,
-        optimize=optimize,
+        constants, assumes, "PaxosOUM",
+        tla_config, act_params,
+        learner="naive", logic="ALIAFS",
+        timeout=timeout, optimize=optimize,
     )
 
 def main(argv):
     # Only optional argument: optimize (0 or 1). Defaults to no optimization.
+    print(f'holes: {holes}')
+
     optimize = False
     if len(argv) > 1:
         try:
@@ -37,7 +40,6 @@ def main(argv):
         "HOLE_Ph2b"
     ]
     timeout    = 1800      # seconds
-    extracheck = False
     # ================================
 
     print(f"Running PaxosOUM synthesis with holes: {holes_to_poke}")
@@ -45,7 +47,6 @@ def main(argv):
         holes_to_poke,
         timeout=timeout,
         optimize=optimize,
-        extracheck=extracheck
     )
 
     # Emit results as JSON to stdout
