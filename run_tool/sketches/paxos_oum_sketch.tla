@@ -246,8 +246,8 @@ Phase2a(b, v) ==
 (***************************************************************************)  
 Phase2b(a) == 
   \E m \in msgs : 
-      /\ __hole1__
-      /\ m.bal >= maxBal[a]
+      /\ m.type = "2a"
+      /\ m.bal >= __hole1__
       /\ maxBal' = [maxBal EXCEPT ![a] = m.bal] 
       /\ maxVBal' = [maxVBal EXCEPT ![a] = m.bal] 
       /\ maxVal' = [maxVal EXCEPT ![a] = m.val]

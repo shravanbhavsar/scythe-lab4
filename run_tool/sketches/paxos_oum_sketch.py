@@ -68,67 +68,37 @@ grammar_bool_true = [
     ]]
 ]
 
+grammar_int_bal = [
+    ["Start", "Int", [
+        ("Int", -1),                    # constant –1
+        ("Int", 0), ("Int", 1),         # small literals
+        ["select", "maxBal", "a"],      # the usual guard  maxBal[a]
+    ]]
+]
+
 # ---------------------------------------------------------------------------
 #  6  Holes – now with 4‑field functars
 # ---------------------------------------------------------------------------
 
 holes = {
     "__hole1__": {
-        "ground_truth":        "TRUE",
-        "parsed_ground_truth": "TRUE",
+        # what TLC should see once the hole is filled
+        "ground_truth":        "maxBal[a]",
+        "parsed_ground_truth": "select(maxBal, a)",
+
+        # 4‑tuple  <name, params, sort, grammar>
         "functar": [
-            "__hole1__",          # (0) function name
-            [["b", "Int"]],       # (1) parameter list with sorts
-            "Bool",               # (2) return sort
-            grammar_bool_true      # (3) grammar
+            "__hole1__",               # operator name
+            [["a", "Int"]],            # single formal parameter (acceptor id)
+            "Int",                     # return sort
+            grammar_int_bal            # grammar that builds Int terms
         ],
-        "is_guard":  True,
-        "action":    "Phase1a",
-        "param_maps": {},
-        "depends":   ["b"],
-    },
-    "HOLE_Ph1b": {
-        "ground_truth":        "TRUE",
-        "parsed_ground_truth": "TRUE",
-        "functar": [
-            "HOLE_Ph1b",
-            [["a", "Int"]],
-            "Bool",
-            grammar_bool_true
-        ],
-        "is_guard":  True,
-        "action":    "Phase1b",
-        "param_maps": {},
-        "depends":   ["a"],
-    },
-    "HOLE_Ph2a": {
-        "ground_truth":        "TRUE",
-        "parsed_ground_truth": "TRUE",
-        "functar": [
-            "HOLE_Ph2a",
-            [["b", "Int"], ["v", "Int"]],
-            "Bool",
-            grammar_bool_true
-        ],
-        "is_guard":  True,
-        "action":    "Phase2a",
-        "param_maps": {},
-        "depends":   ["b", "v"],
-    },
-    "HOLE_Ph2b": {
-        "ground_truth":        "TRUE",
-        "parsed_ground_truth": "TRUE",
-        "functar": [
-            "HOLE_Ph2b",
-            [["a", "Int"]],
-            "Bool",
-            grammar_bool_true
-        ],
-        "is_guard":  True,
-        "action":    "Phase2b",
-        "param_maps": {},
-        "depends":   ["a"],
-    },
+
+        "is_guard":  False,            # it’s an Int term, not Boolean guard
+        "action":    "Phase2b",        # the action where it appears
+        "param_maps": {},              # no special instantiations
+        "depends":   ["a"],            # hole depends only on parameter a
+    }
 }
 
 # ---------------------------------------------------------------------------
