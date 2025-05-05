@@ -7,6 +7,7 @@ import os
 import logging
 from pathlib import Path
 import traceback
+import shutil
 
 from .violations import parse_violation
 
@@ -68,6 +69,11 @@ def model_check(name : str, spec : str, config : str, params_map : dict):
     configpath = Path(dirpath) / f"{name}.cfg"
     with open(configpath, "w") as f:
         f.write(config)
+
+    support_dir = Path(__file__).parent          # repo folder
+    for mod in ["Voting.tla", "TLAPS.tla", "Consensus.tla", "FiniteSetTheorems.tla", "Functions.tla", "WellFoundedInduction.tla", "NaturalsInduction.tla"]:                   # add more as strings
+        shutil.copy(support_dir / mod, dirpath)
+
     # run TLC
     count = 0
     while True:

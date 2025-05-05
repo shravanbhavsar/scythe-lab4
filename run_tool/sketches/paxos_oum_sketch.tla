@@ -21,7 +21,7 @@
 (* appeared, so I'm reluctant to change its name now.                      *)
 (***************************************************************************)
 
-EXTENDS Integers, Naturals, Sequences, TLC
+EXTENDS Integers, Naturals, Sequences, TLC 
 
 (***************************************************************************)
 (* The constants and the assumptions about them are the same as for the    *)
@@ -252,7 +252,7 @@ Phase2b(a) ==
       /\ maxVBal' = [maxVBal EXCEPT ![a] = m.bal] 
       /\ maxVal' = [maxVal EXCEPT ![a] = m.val]
       /\ Send([type |-> "2b", acc |-> a,
-              bal |-> m.bal, val |-> m.val]) 
+              bal |-> m.bal, val |-> m.val])
 
 (***************************************************************************)
 (* The definitions of Next and Spec are what we expect them to be.         *)
