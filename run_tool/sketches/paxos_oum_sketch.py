@@ -1,92 +1,140 @@
 # -*- coding: utf-8 -*-
 """
-Driver for the Paxos+OUM sketch — no mk_sketch helpers, just raw tables.
+Refactored Paxos‑OUM sketch description (v2)
+⇒ Each *functar* entry now contains the full 4‑tuple
+   ⟨name, param‑list‑with‑sorts, return‑sort, grammar⟩
+   so the naive_learner can safely index `f[3]`.
 """
 
 from pathlib import Path
 
-# 1) Read in the .tla and .cfg as strings
-dir_path = Path(__file__).resolve().parent
-PREFIX   = "paxos_oum_sketch"
+# ---------------------------------------------------------------------------
+#  1  Read the TLA⁺ module and its .cfg file
+# ---------------------------------------------------------------------------
 
-sketch = open(dir_path / f"{PREFIX}.tla", "r").read()
-config = open(dir_path / f"{PREFIX}.cfg", "r").read()
+dir_path = Path(__file__).parent.absolute()
 
-# 2) Candidate‐generation needs a constant map: each TLA+ CONSTANT → its domain
+sketch  = (dir_path / "paxos_oum_sketch.tla").read_text()
+config  = (dir_path / "paxos_oum_sketch.cfg").read_text()
+
+# ---------------------------------------------------------------------------
+#  2  Constant declarations (→ `const`)
+# ---------------------------------------------------------------------------
+
 constants = [
+    ("n1", "Int"), ("n2", "Int"), ("n3", "Int"),
     ("Value", ("Set", "Int")),
     ("Acceptor", ("Set", "Int")),
-    ("Quorum",  ("Set", ("Set", "Int"))),
+    ("Quorum", ("Set", ("Set", "Int"))),
     ("ClientRequest", "Int"),
     ("MaxSeq", "Int"),
 ]
 
-# 3) Any extra invariants/assumes for the learner? (none here)
+# ---------------------------------------------------------------------------
+#  3  Global assumptions
+# ---------------------------------------------------------------------------
+
 assumes = [
     ["!=", "n1", "n2", "n3"],
-    ["=",
-        "Node",
-        ["set.union",
-          ["set.singleton", "n1"],
-          ["set.singleton", "n2"],
-          ["set.singleton", "n3"]
-        ]
-    ],
+    ["=", "Node", [
+        "set.union",
+        ["set.singleton", "n1"], ["set.singleton", "n2"], ["set.singleton", "n3"]
+    ]],
 ]
 
-# 4) Action parameter lists for each action
+# ---------------------------------------------------------------------------
+#  4  Action → parameter mapping
+# ---------------------------------------------------------------------------
+
 act_params = {
-    "Inital predicate": [],
-    "Phase1a"   : ["b"],
-    "Phase1b"   : ["a"],
-    "Phase2a"   : ["b","v"],
-    "Phase2b"   : ["a"],
-    "Send"      : ["m"],
-    "OUMSend"   : ["req"],
+    "Initial predicate": [],
+    "Phase1a": ["b"],
+    "Phase1b": ["a"],
+    "Phase2a": ["b", "v"],
+    "Phase2b": ["a"],
+    "Send":       ["m"],
+    "OUMSend":    ["req"],
     "OUMDeliver": [],
 }
 
-# 5) Hole‐metadata: for each HOLE_<…> the learner needs
+# ---------------------------------------------------------------------------
+#  5  Simple Boolean grammar shared by all guard holes
+# ---------------------------------------------------------------------------
+
+grammar_bool_true = [
+    ["Start", "Bool", [  # non‑terminal Start of sort Bool
+        ("Bool", True),   # constant TRUE
+        ("Bool", False)   # constant FALSE  (included for completeness)
+    ]]
+]
+
+# ---------------------------------------------------------------------------
+#  6  Holes – now with 4‑field functars
+# ---------------------------------------------------------------------------
+
 holes = {
-  "HOLE_Ph1a": {
-      "ground_truth":    "TRUE",
-      "parsed_ground_truth": "TRUE",
-      "functar":         ("HOLE_Ph1a", ["b"]),
-      "is_guard":        True,
-      "action":          "Phase1a",
-      "param_maps":      {},      # no special maps
-      "depends":         ["b"],
-  },
-  "HOLE_Ph1b": {
-      "ground_truth":    "TRUE",
-      "parsed_ground_truth": "TRUE",
-      "functar":         ("HOLE_Ph1b", ["a"]),
-      "is_guard":        True,
-      "action":          "Phase1b",
-      "param_maps":      {},
-      "depends":         ["a"],
-  },
-  "HOLE_Ph2a": {
-      "ground_truth":    "TRUE",
-      "parsed_ground_truth": "TRUE",
-      "functar":         ("HOLE_Ph2a", ["b","v"]),
-      "is_guard":        True,
-      "action":          "Phase2a",
-      "param_maps":      {},
-      "depends":         ["b","v"],
-  },
-  "HOLE_Ph2b": {
-      "ground_truth":    "TRUE",
-      "parsed_ground_truth": "TRUE",
-      "functar":         ("HOLE_Ph2b", ["a"]),
-      "is_guard":        True,
-      "action":          "Phase2b",
-      "param_maps":      {},
-      "depends":         ["a"],
-  },
+    "__hole1__": {
+        "ground_truth":        "TRUE",
+        "parsed_ground_truth": "TRUE",
+        "functar": [
+            "__hole1__",          # (0) function name
+            [["b", "Int"]],       # (1) parameter list with sorts
+            "Bool",               # (2) return sort
+            grammar_bool_true      # (3) grammar
+        ],
+        "is_guard":  True,
+        "action":    "Phase1a",
+        "param_maps": {},
+        "depends":   ["b"],
+    },
+    "HOLE_Ph1b": {
+        "ground_truth":        "TRUE",
+        "parsed_ground_truth": "TRUE",
+        "functar": [
+            "HOLE_Ph1b",
+            [["a", "Int"]],
+            "Bool",
+            grammar_bool_true
+        ],
+        "is_guard":  True,
+        "action":    "Phase1b",
+        "param_maps": {},
+        "depends":   ["a"],
+    },
+    "HOLE_Ph2a": {
+        "ground_truth":        "TRUE",
+        "parsed_ground_truth": "TRUE",
+        "functar": [
+            "HOLE_Ph2a",
+            [["b", "Int"], ["v", "Int"]],
+            "Bool",
+            grammar_bool_true
+        ],
+        "is_guard":  True,
+        "action":    "Phase2a",
+        "param_maps": {},
+        "depends":   ["b", "v"],
+    },
+    "HOLE_Ph2b": {
+        "ground_truth":        "TRUE",
+        "parsed_ground_truth": "TRUE",
+        "functar": [
+            "HOLE_Ph2b",
+            [["a", "Int"]],
+            "Bool",
+            grammar_bool_true
+        ],
+        "is_guard":  True,
+        "action":    "Phase2b",
+        "param_maps": {},
+        "depends":   ["a"],
+    },
 }
 
-# 6) Expose everything for main_paxos_oum.py
+# ---------------------------------------------------------------------------
+#  7  Public exports
+# ---------------------------------------------------------------------------
+
 __all__ = [
-    "sketch", "holes", "constants", "assumes", "act_params", "config"
+    "sketch", "config", "const", "assumes", "act_params", "holes",
 ]

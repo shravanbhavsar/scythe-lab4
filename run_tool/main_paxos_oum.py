@@ -14,7 +14,7 @@ from experiments_common import mk_run_experiment
 def mk_run_experiment_paxos_oum(holes_to_poke, timeout=None, optimize=False):
     return mk_run_experiment(
         sketch, holes, holes_to_poke,
-        constants, assumes, "PaxosOUM",
+        constants, assumes, "paxos_oum_sketch",
         tla_config, act_params,
         learner="naive", logic="ALIAFS",
         timeout=timeout, optimize=optimize,
@@ -34,10 +34,10 @@ def main(argv):
 
     # === HARD‑CODED CONFIGURATION ===
     holes_to_poke = [
-        "HOLE_Ph1a",
-        "HOLE_Ph1b",
-        "HOLE_Ph2a",
-        "HOLE_Ph2b"
+        "__hole1__",
+        # "HOLE_Ph1b",
+        # "HOLE_Ph2a",
+        # "HOLE_Ph2b"
     ]
     timeout    = 1800      # seconds
     # ================================

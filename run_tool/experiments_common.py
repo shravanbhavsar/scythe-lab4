@@ -98,6 +98,7 @@ def iteration(cnt, universe, tla_module, tla_config, act_params, experiment_conf
     times_to_pick_candidate.append(pick_end - pick_start)
     
     print("Model chcking candidate...", flush=True)
+    print(tla_module)
     mc_start = time.time()
     violation = model_check(
         tla_module, candidate, tla_config, act_params)
